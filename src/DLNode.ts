@@ -9,12 +9,12 @@ export class DLNode {
   public inMemory: boolean = false;
   public key: string;
   public fdata?: Buffer;
-  public fpath: string;
+  public fname: string;
   public fsize?: number;
 
-  constructor(key: string, fpath: string) {
+  constructor(key: string, fname: string) {
     this.key = key;
-    this.fpath = fpath;
+    this.fname = fname;
   }
 
 }
