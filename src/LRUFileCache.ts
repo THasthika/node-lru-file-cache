@@ -1,18 +1,17 @@
-import * as fs from "fs-extra";
-import { dirname, extname, join } from "path";
+import * as fs from 'fs-extra';
+import { dirname, extname, join } from 'path';
 
-import { DLList } from "./DLList";
-import { DLNode } from "./DLNode";
-import utils from "./utils";
+import { DLList } from './DLList';
+import { DLNode } from './DLNode';
+import utils from './utils';
 
 export interface ILRUFileCacheOptions {
-  'ram_cache_size': string | '128 MB',
-  'file_cache_size': string | '512 MB',
-  'tmp_folder'?: string
+  ram_cache_size: string | '128 MB';
+  file_cache_size: string | '512 MB';
+  tmp_folder?: string;
 }
 
 export class LRUFileCache {
-
   private maxRAMCache: number;
   private maxFSCache: number;
   private folder: string;
@@ -22,26 +21,22 @@ export class LRUFileCache {
 
   private list: DLList;
 
-  
-  public get ramSize() : number {
+  public get ramSize(): number {
     return this.ramCacheSize;
   }
 
-  public get fsSize() : number {
+  public get fsSize(): number {
     return this.fsCacheSize;
   }
-  
 
   constructor(options: ILRUFileCacheOptions) {
     this.maxRAMCache = utils.sizeStringToNumber(options.ram_cache_size);
     this.maxFSCache = utils.sizeStringToNumber(options.file_cache_size);
 
-    console.log(`${this.maxRAMCache} | ${this.maxFSCache}`);
-
     let tmpFolder = options.tmp_folder;
     if (!tmpFolder) {
       // tmpFolder = join(dirname(__dirname), "./__cache__" + utils.randomString(10));
-      tmpFolder = join(dirname(__dirname), "./__cache__");
+      tmpFolder = join(dirname(__dirname), './__cache__');
     }
     this.folder = tmpFolder;
 
@@ -53,18 +48,17 @@ export class LRUFileCache {
   }
 
   public async addFile(key: string, filePath: string) {
-
     if (this.list.keyExists(key)) {
-      throw new Error("key already exists!");
+      throw new Error('key already exists!');
     }
 
     if (!fs.existsSync(filePath)) {
-      throw new Error("file does not exists!");
+      throw new Error('file does not exists!');
     }
 
     const data = fs.readFileSync(filePath);
 
-    const uniqueFileName = key + "_" + utils.randomString(10) + "_" + new Date().getTime() + extname(filePath);
+    const uniqueFileName = key + '_' + utils.randomString(10) + '_' + new Date().getTime() + extname(filePath);
 
     const node = new DLNode(key, uniqueFileName);
     node.fdata = data;
@@ -113,7 +107,6 @@ export class LRUFileCache {
         continue;
       }
 
-
       await this.removeFromMemory(node);
 
       node = node.prev;
@@ -143,7 +136,7 @@ export class LRUFileCache {
     const data = fs.readFileSync(fpath);
     node.fdata = data;
     node.inMemory = true;
-    
+
     this.ramCacheSize += node.fsize!;
   }
 
@@ -165,7 +158,7 @@ export class LRUFileCache {
     fs.unlink(join(this.folder, node.fname));
     this.fsCacheSize -= node.fsize!;
   }
-  
+
   private async writeFileToCacheFolder(buffer: Buffer, fname: string) {
     if (!fs.existsSync(this.folder)) {
       fs.mkdirSync(this.folder, { recursive: true });
@@ -173,5 +166,4 @@ export class LRUFileCache {
     const fpath = join(this.folder, fname);
     fs.writeFileSync(fpath, buffer);
   }
-
 }

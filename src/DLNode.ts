@@ -2,7 +2,6 @@
  * Doubly Linked Node
  */
 export class DLNode {
-
   public prev?: DLNode;
   public next?: DLNode;
 
@@ -16,5 +15,4 @@ export class DLNode {
     this.key = key;
     this.fname = fname;
   }
-
 }

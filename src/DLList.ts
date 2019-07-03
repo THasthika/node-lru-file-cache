@@ -1,22 +1,19 @@
-import { DLNode } from "./DLNode";
+import { DLNode } from './DLNode';
 
 /**
  * Doubly Linked List to store the cache references
  */
 export class DLList {
-
   public head?: DLNode;
   public tail?: DLNode;
   private count: number = 0;
 
-  private keySet:Set<string> = new Set();
-  
+  private keySet: Set<string> = new Set();
 
   // pushHead - add the the head
   public pushHead(node: DLNode) {
-
     if (this.keyExists(node.key)) {
-      throw new Error("key already exists!");
+      throw new Error('key already exists!');
     }
 
     node.next = this.head;
@@ -38,9 +35,8 @@ export class DLList {
 
   // pushTail
   public pushTail(node: DLNode) {
-
     if (this.keyExists(node.key)) {
-      throw new Error("key already exists!");
+      throw new Error('key already exists!');
     }
 
     node.prev = this.tail;
@@ -61,8 +57,7 @@ export class DLList {
   }
 
   // popHead
-  public popHead() : DLNode | undefined {
-
+  public popHead(): DLNode | undefined {
     if (!this.head) {
       return undefined;
     }
@@ -86,7 +81,7 @@ export class DLList {
   }
 
   // popTail
-  public popTail() : DLNode | undefined {
+  public popTail(): DLNode | undefined {
     if (!this.tail) {
       return undefined;
     }
@@ -110,7 +105,7 @@ export class DLList {
   }
 
   // get
-  public get(key: string) : DLNode | undefined {
+  public get(key: string): DLNode | undefined {
     if (this.count === 0) {
       return undefined;
     }
@@ -164,5 +159,4 @@ export class DLList {
   private removeKey(node: DLNode) {
     this.keySet.delete(node.key);
   }
-
 }
