@@ -33,6 +33,10 @@ export class LRUFileCache {
     this.maxRAMCache = utils.sizeStringToNumber(options.ram_cache_size);
     this.maxFSCache = utils.sizeStringToNumber(options.file_cache_size);
 
+    if (this.maxRAMCache > this.maxFSCache) {
+      throw new Error('RAM Cache should be less than FS Cache!');
+    }
+
     let tmpFolder = options.tmp_folder;
     if (!tmpFolder) {
       // tmpFolder = join(dirname(__dirname), "./__cache__" + utils.randomString(10));
@@ -57,6 +61,10 @@ export class LRUFileCache {
     }
 
     const data = fs.readFileSync(filePath);
+
+    if (data.byteLength > this.maxRAMCache) {
+      throw new Error('file is larger than cache!');
+    }
 
     const uniqueFileName = key + '_' + utils.randomString(10) + '_' + new Date().getTime() + extname(filePath);
 

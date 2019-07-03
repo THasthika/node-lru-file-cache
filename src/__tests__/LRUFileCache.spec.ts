@@ -1,5 +1,6 @@
+import { dirname, join } from 'path';
+
 import { LRUFileCache } from '../LRUFileCache';
-import { join, dirname } from 'path';
 
 test('LRUFileCache', done => {
   const cache = new LRUFileCache({
