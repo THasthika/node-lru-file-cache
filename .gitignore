@@ -2,4 +2,3 @@ node_modules
 /lib
 /__cache__*
 /data
-package-lock.json
