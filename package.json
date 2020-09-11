@@ -1,6 +1,6 @@
 {
   "name": "lru-file-cache",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Node LRU File Cache",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -30,18 +30,18 @@
   },
   "homepage": "https://github.com/tharindu96/node-lru-file-cache#readme",
   "devDependencies": {
-    "@types/fs-extra": "^8.0.0",
-    "@types/jest": "^24.0.15",
+    "@types/fs-extra": "^9.0.1",
+    "@types/jest": "^26.0.13",
     "@types/node": "^12.6.2",
-    "jest": "^24.8.0",
+    "jest": "^26.4.2",
     "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "^26.3.0",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "fs-extra": "^8.1.0"
+    "fs-extra": "^9.0.1"
   },
   "keywords": [
     "cache",
