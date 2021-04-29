@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/THasthika/node-lru-file-cache/actions/workflows/node.js.yml/badge.svg)](https://github.com/THasthika/node-lru-file-cache/actions/workflows/node.js.yml)
+
 # LRU File Cache
 
 A 2 tier caching for files
