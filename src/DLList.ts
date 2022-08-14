@@ -8,10 +8,10 @@ export class DLList {
   public tail?: DLNode;
   private count: number = 0;
 
-  private keySet: Set<string> = new Set();
+  private readonly keySet: Set<string> = new Set();
 
   // pushHead - add the the head
-  public pushHead(node: DLNode) {
+  public pushHead(node: DLNode): DLList {
     if (this.keyExists(node.key)) {
       throw new Error('key already exists!');
     }
@@ -19,11 +19,11 @@ export class DLList {
     node.next = this.head;
     node.prev = undefined;
 
-    if (node.next) {
+    if (node.next != null) {
       node.next.prev = node;
     }
 
-    if (!this.tail) {
+    if (this.tail == null) {
       this.tail = node;
     }
 
@@ -34,7 +34,7 @@ export class DLList {
   }
 
   // pushTail
-  public pushTail(node: DLNode) {
+  public pushTail(node: DLNode): DLList {
     if (this.keyExists(node.key)) {
       throw new Error('key already exists!');
     }
@@ -42,11 +42,11 @@ export class DLList {
     node.prev = this.tail;
     node.next = undefined;
 
-    if (node.prev) {
+    if (node.prev != null) {
       node.prev.next = node;
     }
 
-    if (!this.head) {
+    if (this.head == null) {
       this.head = node;
     }
 
@@ -58,21 +58,21 @@ export class DLList {
 
   // popHead
   public popHead(): DLNode | undefined {
-    if (!this.head) {
+    if (this.head == null) {
       return undefined;
     }
 
     const node = this.head;
-    this.head = node!.next;
+    this.head = node.next;
     this.count--;
 
-    node!.prev = undefined;
-    node!.next = undefined;
+    node.prev = undefined;
+    node.next = undefined;
 
     if (this.count === 0) {
       this.tail = undefined;
     } else {
-      this.head!.prev = undefined;
+      if (this.head != null) this.head.prev = undefined;
     }
 
     this.removeKey(node);
@@ -82,21 +82,21 @@ export class DLList {
 
   // popTail
   public popTail(): DLNode | undefined {
-    if (!this.tail) {
+    if (this.tail == null) {
       return undefined;
     }
 
     const node = this.tail;
-    this.tail = node!.prev;
+    this.tail = node.prev;
     this.count--;
 
-    node!.next = undefined;
-    node!.prev = undefined;
+    node.next = undefined;
+    node.prev = undefined;
 
     if (this.count === 0) {
       this.head = undefined;
     } else {
-      this.tail!.next = undefined;
+      if (this.tail != null) this.tail.next = undefined;
     }
 
     this.removeKey(node);
@@ -111,14 +111,14 @@ export class DLList {
     }
 
     let node = this.head;
-    while (node) {
+    while (node != null) {
       if (node.key === key) {
         break;
       }
       node = node.next;
     }
 
-    if (!node) {
+    if (node == null) {
       return undefined;
     }
 
@@ -129,10 +129,10 @@ export class DLList {
     const sNext = node.next;
     const sPrev = node.prev;
 
-    if (sNext) {
+    if (sNext != null) {
       sNext.prev = sPrev;
     }
-    if (sPrev) {
+    if (sPrev != null) {
       sPrev.next = sNext;
     }
 
@@ -148,15 +148,15 @@ export class DLList {
   }
 
   // key exists
-  public keyExists(key: string) {
+  public keyExists(key: string): boolean {
     return this.keySet.has(key);
   }
 
-  private addKey(node: DLNode) {
+  private addKey(node: DLNode): void {
     this.keySet.add(node.key);
   }
 
-  private removeKey(node: DLNode) {
+  private removeKey(node: DLNode): void {
     this.keySet.delete(node.key);
   }
 }

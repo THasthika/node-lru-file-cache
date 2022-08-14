@@ -16,7 +16,7 @@ function sizeStringToNumber(ssize: string): number {
   const regexPattern = /([\d]+(\.[\d]+)?) ?([KMGT]B)/;
   const regexResult = regexPattern.exec(ssize);
 
-  if (!regexResult) {
+  if (regexResult == null) {
     throw new Error('Invalid Size Format');
   }
 
