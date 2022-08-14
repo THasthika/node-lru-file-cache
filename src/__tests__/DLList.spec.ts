@@ -13,14 +13,14 @@ test('DLList', () => {
   list.pushTail(node3);
 
   expect(list.head).toBe(node2);
-  expect(list.head!.next).toBe(node1);
+  expect(list.head?.next).toBe(node1);
   expect(list.tail).toBe(node3);
 
   const xx1 = list.popHead();
   expect(xx1).toBe(node2);
 
   expect(list.head).toBe(node1);
-  expect(list.head!.prev).toBeUndefined();
+  expect(list.head?.prev).toBeUndefined();
 });
 
 test('DLList - get', () => {
@@ -37,20 +37,20 @@ test('DLList - get', () => {
   list.pushTail(node4);
 
   expect(list.head).toBe(node3);
-  expect(list.head!.next).toBe(node2);
-  expect(list.head!.next!.next).toBe(node1);
-  expect(list.head!.next!.next!.next).toBe(node4);
+  expect(list.head?.next).toBe(node2);
+  expect(list.head?.next?.next).toBe(node1);
+  expect(list.head?.next?.next?.next).toBe(node4);
 
   expect(list.tail).toBe(node4);
-  expect(list.tail!.prev).toBe(node1);
-  expect(list.tail!.prev!.prev).toBe(node2);
-  expect(list.tail!.prev!.prev!.prev).toBe(node3);
+  expect(list.tail?.prev).toBe(node1);
+  expect(list.tail?.prev?.prev).toBe(node2);
+  expect(list.tail?.prev?.prev?.prev).toBe(node3);
 
   const get1 = list.get('node1');
   expect(get1).toBe(node1);
 
   expect(list.head).toBe(node1);
-  expect(list.head!.next).toBe(node3);
-  expect(list.head!.next!.next).toBe(node2);
-  expect(list.head!.next!.next!.next).toBe(node4);
+  expect(list.head?.next).toBe(node3);
+  expect(list.head?.next?.next).toBe(node2);
+  expect(list.head?.next?.next?.next).toBe(node4);
 });
