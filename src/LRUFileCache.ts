@@ -12,14 +12,14 @@ export interface ILRUFileCacheOptions {
 }
 
 export class LRUFileCache {
-  private maxRAMCache: number;
-  private maxFSCache: number;
-  private folder: string;
+  private readonly maxRAMCache: number;
+  private readonly maxFSCache: number;
+  private readonly folder: string;
 
   private ramCacheSize: number = 0;
   private fsCacheSize: number = 0;
 
-  private list: DLList;
+  private readonly list: DLList;
 
   public get ramSize(): number {
     return this.ramCacheSize;
@@ -38,7 +38,7 @@ export class LRUFileCache {
     }
 
     let tmpFolder = options.tmp_folder;
-    if (!tmpFolder) {
+    if (tmpFolder == null) {
       // tmpFolder = join(dirname(__dirname), "./__cache__" + utils.randomString(10));
       tmpFolder = join(dirname(__dirname), './__cache__');
     }
@@ -51,7 +51,7 @@ export class LRUFileCache {
     this.list = new DLList();
   }
 
-  public async addFile(key: string, filePath: string) {
+  public async addFile(key: string, filePath: string): Promise<void> {
     if (this.list.keyExists(key)) {
       throw new Error('key already exists!');
     }
@@ -66,7 +66,7 @@ export class LRUFileCache {
       throw new Error('file is larger than cache!');
     }
 
-    const uniqueFileName = key + '_' + utils.randomString(10) + '_' + new Date().getTime() + extname(filePath);
+    const uniqueFileName = `${key}_${utils.randomString(10)}_${new Date().getTime()}${extname(filePath)}`;
 
     const node = new DLNode(key, uniqueFileName);
     node.fdata = data;
@@ -84,13 +84,17 @@ export class LRUFileCache {
     await this.checkFSConstraint();
   }
 
-  public async getFile(key: string) {
+  public async getFile(key: string): Promise<Buffer | undefined> {
     if (!this.list.keyExists(key)) {
       return undefined;
     }
 
-    const node = this.list.get(key)!;
-    if (!node.inMemory) {
+    const node = this.list.get(key);
+    if (node == null) {
+      return undefined;
+    }
+
+    if (node?.inMemory) {
       await this.readToMemory(node);
     }
 
@@ -99,13 +103,13 @@ export class LRUFileCache {
     return node.fdata;
   }
 
-  private async checkRAMConstraint() {
+  private async checkRAMConstraint(): Promise<void> {
     if (this.ramCacheSize <= this.maxRAMCache) {
       return;
     }
 
     let node = this.list.tail;
-    while (node) {
+    while (node != null) {
       if (this.ramCacheSize <= this.maxRAMCache) {
         return;
       }
@@ -121,21 +125,21 @@ export class LRUFileCache {
     }
   }
 
-  private async checkFSConstraint() {
+  private async checkFSConstraint(): Promise<void> {
     if (this.fsCacheSize <= this.maxFSCache) {
       return;
     }
 
     while (this.fsCacheSize > this.maxFSCache) {
       const node = this.list.popTail();
-      if (!node) {
+      if (node == null) {
         break;
       }
-      this.removeFromFS(node);
+      await this.removeFromFS(node);
     }
   }
 
-  private async readToMemory(node: DLNode) {
+  private async readToMemory(node: DLNode): Promise<void> {
     if (node.inMemory) {
       return;
     }
@@ -145,10 +149,12 @@ export class LRUFileCache {
     node.fdata = data;
     node.inMemory = true;
 
-    this.ramCacheSize += node.fsize!;
+    if (node.fsize !== undefined) {
+      this.ramCacheSize += node.fsize;
+    }
   }
 
-  private async removeFromMemory(node: DLNode) {
+  private async removeFromMemory(node: DLNode): Promise<void> {
     if (!node.inMemory) {
       return;
     }
@@ -156,18 +162,23 @@ export class LRUFileCache {
     node.fdata = undefined;
     node.inMemory = false;
 
-    this.ramCacheSize -= node.fsize!;
+    if (node.fsize !== undefined) {
+      this.ramCacheSize -= node.fsize;
+    }
   }
 
-  private async removeFromFS(node: DLNode) {
+  private async removeFromFS(node: DLNode): Promise<void> {
     if (node.inMemory) {
       await this.removeFromMemory(node);
     }
-    fs.unlink(join(this.folder, node.fname));
-    this.fsCacheSize -= node.fsize!;
+    await fs.unlink(join(this.folder, node.fname));
+
+    if (node.fsize !== undefined) {
+      this.fsCacheSize -= node.fsize;
+    }
   }
 
-  private async writeFileToCacheFolder(buffer: Buffer, fname: string) {
+  private async writeFileToCacheFolder(buffer: Buffer, fname: string): Promise<void> {
     if (!fs.existsSync(this.folder)) {
       fs.mkdirSync(this.folder, { recursive: true });
     }
